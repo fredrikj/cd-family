@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  NgZone,
+  OnInit,
+} from '@angular/core';
 
 @Component({
   selector: 'app-push-parent',
@@ -13,7 +19,18 @@ export class PushParentComponent implements OnInit {
     console.log(`Pushy CD ${(this.counter += 1)}`);
     return 'Pushy';
   }
-  constructor() {}
+  constructor(private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    setTimeout(
+      () => console.log('----------setTimeout in Pushy----------'),
+      1000
+    );
+    this.zone.runOutsideAngular(() =>
+      setTimeout(() => {
+        console.log('----------detectChanges in Pushy----------');
+        this.cdr.detectChanges();
+      }, 2000)
+    );
+  }
 }
