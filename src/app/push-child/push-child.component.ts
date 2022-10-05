@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 
 @Component({
   selector: 'app-push-child',
@@ -9,9 +14,12 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 export class PushChildComponent implements OnInit {
   counter = 0;
 
+  @Input()
+  public parent: string = '';
+
   get name() {
-    console.log(`push-child CD ${(this.counter += 1)}`);
-    return 'push-child';
+    console.log(`${this.parent}'s pushy child CD ${(this.counter += 1)}`);
+    return 'pushy child';
   }
   constructor() {}
 

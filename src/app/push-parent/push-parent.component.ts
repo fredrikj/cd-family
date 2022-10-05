@@ -10,8 +10,8 @@ export class PushParentComponent implements OnInit {
   counter = 0;
 
   get name() {
-    console.log(`push-parent CD ${(this.counter += 1)}`);
-    return 'push-parent';
+    console.log(`Pushy CD ${(this.counter += 1)}`);
+    return 'Pushy';
   }
   constructor() {}
 

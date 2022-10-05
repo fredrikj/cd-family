@@ -9,8 +9,8 @@ export class ParentComponent implements OnInit {
   counter = 0;
 
   get name() {
-    console.log(`parent CD ${(this.counter += 1)}`);
-    return 'parent';
+    console.log(`Plainy CD ${(this.counter += 1)}`);
+    return 'Plainy';
   }
   constructor() {}
 

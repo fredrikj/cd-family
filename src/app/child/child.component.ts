@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-child',
@@ -8,8 +8,11 @@ import { Component, OnInit } from '@angular/core';
 export class ChildComponent implements OnInit {
   counter = 0;
 
+  @Input()
+  public parent: string = '';
+
   get name() {
-    console.log(`child CD ${(this.counter += 1)}`);
+    console.log(`${this.parent}'s child CD ${(this.counter += 1)}`);
     return 'child';
   }
 
