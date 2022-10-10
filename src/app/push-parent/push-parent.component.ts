@@ -5,6 +5,8 @@ import {
   NgZone,
   OnInit,
 } from '@angular/core';
+import { tap, timer } from 'rxjs';
+import { Service } from '../service';
 
 @Component({
   selector: 'app-push-parent',
@@ -19,7 +21,23 @@ export class PushParentComponent implements OnInit {
     console.log(`Pushy CD ${(this.counter += 1)}`);
     return 'Pushy';
   }
-  constructor(private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private service: Service
+  ) {}
+
+  templateObservable = timer(3000).pipe(
+    tap(() => console.log('----------templateObservable in Pushy----------'))
+  );
+
+  inZoneObservable = timer(4000).pipe(
+    tap(() => console.log('----------inZoneObservable in Pushy----------'))
+  );
+
+  outsideZoneObservable = timer(4000).pipe(
+    tap(() => console.log('----------outsideZoneObservable in Pushy----------'))
+  );
 
   ngOnInit(): void {
     setTimeout(
@@ -32,5 +50,7 @@ export class PushParentComponent implements OnInit {
         this.cdr.detectChanges();
       }, 2000)
     );
+    this.inZoneObservable.subscribe();
+    this.zone.runOutsideAngular(() => this.outsideZoneObservable.subscribe());
   }
 }
