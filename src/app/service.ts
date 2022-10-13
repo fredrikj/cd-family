@@ -5,8 +5,8 @@ import { timer, tap, Subject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class Service {
-  public createSharedTimer(time: number): Observable<number> {
-    return timer(time).pipe(tap(() => console.log('    service timer emits')));
+  public createTimer(msg: string, time: number): Observable<number> {
+    return timer(time).pipe(tap(() => console.log(msg)));
   }
 
   constructor(private zone: NgZone) {}

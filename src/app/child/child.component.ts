@@ -18,7 +18,7 @@ export class ChildComponent implements OnInit {
   }
 
   templateSubject = this.service.createPrivateCD(
-    this.service.createSharedTimer(6000),
+    this.service.createTimer('----------child private CD----------', 6000),
     this.cdr
   );
 

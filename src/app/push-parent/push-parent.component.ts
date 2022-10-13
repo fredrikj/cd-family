@@ -18,7 +18,7 @@ export class PushParentComponent implements OnInit {
   counter = 0;
 
   templateSubject = this.service.createPrivateCD(
-    this.service.createSharedTimer(8000),
+    this.service.createTimer('----------Pushy private CD----------', 8000),
     this.cdr
   );
 

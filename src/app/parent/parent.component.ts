@@ -10,7 +10,7 @@ export class ParentComponent implements OnInit {
   counter = 0;
 
   templateSubject = this.service.createPrivateCD(
-    this.service.createSharedTimer(7000),
+    this.service.createTimer('----------Plainy private CD----------', 7000),
     this.cdr
   );
 
