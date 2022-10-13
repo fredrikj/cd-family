@@ -1,18 +1,28 @@
-import { Injectable, NgZone } from '@angular/core';
-import { timer, tap, Subject } from 'rxjs';
+import { ChangeDetectorRef, Injectable, NgZone } from '@angular/core';
+import { timer, share, tap, Subject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Service {
-  private theSubject = new Subject<number>();
+  public thePublicObservable: Observable<number> = timer(5000).pipe(
+    tap(() => console.log('    service timer emits')),
+    share()
+  );
 
-  public thePublicObservable = this.theSubject.asObservable();
+  constructor(private zone: NgZone) {}
 
-  constructor(private zone: NgZone) {
-    const obs = timer(5000).pipe(
-      tap(() => console.log('    service timer emits'))
+  public createPrivateCD<T>(
+    observable: Observable<T>,
+    cdr: ChangeDetectorRef
+  ): Observable<T> {
+    const s = new Subject<T>();
+    this.zone.runOutsideAngular(() =>
+      observable.subscribe((x) => {
+        s.next(x);
+        cdr.detectChanges();
+      })
     );
-    this.zone.runOutsideAngular(() => obs.subscribe(this.theSubject));
+    return s.asObservable();
   }
 }

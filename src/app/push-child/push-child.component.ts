@@ -6,7 +6,6 @@ import {
   OnInit,
 } from '@angular/core';
 import { Service } from '../service';
-import { Subject, tap } from 'rxjs';
 
 @Component({
   selector: 'app-push-child',
@@ -17,7 +16,10 @@ import { Subject, tap } from 'rxjs';
 export class PushChildComponent implements OnInit {
   counter = 0;
 
-  templateSubject = new Subject<number>();
+  templateSubject = this.service.createPrivateCD(
+    this.service.thePublicObservable,
+    this.cdr
+  );
 
   @Input()
   public parent: string = '';
@@ -28,16 +30,5 @@ export class PushChildComponent implements OnInit {
   }
   constructor(public cdr: ChangeDetectorRef, public service: Service) {}
 
-  ngOnInit(): void {
-    this.service.thePublicObservable
-      .pipe(
-        tap(() =>
-          console.log('----------thePublicObservable in pushy child----------')
-        )
-      )
-      .subscribe((x) => {
-        this.templateSubject.next(x);
-        this.cdr.detectChanges();
-      });
-  }
+  ngOnInit(): void {}
 }
