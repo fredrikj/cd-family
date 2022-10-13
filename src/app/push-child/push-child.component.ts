@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   Input,
   NgZone,
   OnInit,
 } from '@angular/core';
 import { Service } from '../service';
-import { tap } from 'rxjs';
+import { Subject, tap } from 'rxjs';
 
 @Component({
   selector: 'app-push-child',
@@ -20,11 +21,19 @@ export class PushChildComponent implements OnInit {
   @Input()
   public parent: string = '';
 
+  sharedSubject = new Subject<number>();
+
+  nonSharedSubject = new Subject<number>();
+
   get name() {
     console.log(`${this.parent}'s pushy child CD ${(this.counter += 1)}`);
     return 'pushy child';
   }
-  constructor(private zone: NgZone, private service: Service) {}
+  constructor(
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private service: Service
+  ) {}
 
   ngOnInit(): void {
     this.zone.runOutsideAngular(() =>
@@ -36,7 +45,10 @@ export class PushChildComponent implements OnInit {
             )
           )
         )
-        .subscribe()
+        .subscribe((x) => {
+          this.nonSharedSubject.next(x);
+          this.cdr.detectChanges();
+        })
     );
     this.zone.runOutsideAngular(() =>
       this.service.sharedObservable
@@ -47,7 +59,10 @@ export class PushChildComponent implements OnInit {
             )
           )
         )
-        .subscribe()
+        .subscribe((x) => {
+          this.sharedSubject.next(x);
+          this.cdr.detectChanges();
+        })
     );
   }
 }
