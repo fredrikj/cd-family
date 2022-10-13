@@ -1,14 +1,13 @@
 import { ChangeDetectorRef, Injectable, NgZone } from '@angular/core';
-import { timer, share, tap, Subject, Observable } from 'rxjs';
+import { timer, tap, Subject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Service {
-  public thePublicObservable: Observable<number> = timer(5000).pipe(
-    tap(() => console.log('    service timer emits')),
-    share()
-  );
+  public createSharedTimer(time: number): Observable<number> {
+    return timer(time).pipe(tap(() => console.log('    service timer emits')));
+  }
 
   constructor(private zone: NgZone) {}
 

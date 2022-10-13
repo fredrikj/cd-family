@@ -17,7 +17,7 @@ export class PushChildComponent implements OnInit {
   counter = 0;
 
   templateSubject = this.service.createPrivateCD(
-    this.service.thePublicObservable,
+    this.service.createSharedTimer(5000),
     this.cdr
   );
 

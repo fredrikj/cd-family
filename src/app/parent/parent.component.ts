@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Service } from '../service';
 
 @Component({
   selector: 'app-parent',
@@ -8,11 +9,16 @@ import { Component, OnInit } from '@angular/core';
 export class ParentComponent implements OnInit {
   counter = 0;
 
+  templateSubject = this.service.createPrivateCD(
+    this.service.createSharedTimer(7000),
+    this.cdr
+  );
+
   get name() {
     console.log(`Plainy CD ${(this.counter += 1)}`);
     return 'Plainy';
   }
-  constructor() {}
+  constructor(public cdr: ChangeDetectorRef, public service: Service) {}
 
   ngOnInit(): void {}
 }

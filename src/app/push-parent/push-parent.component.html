@@ -1,5 +1,5 @@
 <div class='main'>
-  <p>{{ name }}</p>
+  <p>{{ name }} {{ templateSubject | async }}</p>
   <p>templateObservable {{ templateObservable | async }}</p>
   <app-child parent=Pushy>
   </app-child>
