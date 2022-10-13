@@ -6,7 +6,6 @@ import {
   OnInit,
 } from '@angular/core';
 import { tap, timer } from 'rxjs';
-import { Service } from '../service';
 
 @Component({
   selector: 'app-push-parent',
@@ -21,11 +20,7 @@ export class PushParentComponent implements OnInit {
     console.log(`Pushy CD ${(this.counter += 1)}`);
     return 'Pushy';
   }
-  constructor(
-    private zone: NgZone,
-    private cdr: ChangeDetectorRef,
-    private service: Service
-  ) {}
+  constructor(private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
   templateObservable = timer(3000).pipe(
     tap(() => console.log('----------templateObservable in Pushy----------'))

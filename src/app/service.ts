@@ -1,15 +1,18 @@
-import { Injectable } from '@angular/core';
-import { timer, share, tap } from 'rxjs';
+import { Injectable, NgZone } from '@angular/core';
+import { timer, tap, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Service {
-  nonSharedObservable = timer(5000).pipe(
-    tap(() => console.log('    nonSharedObservable emits'))
-  );
-  sharedObservable = timer(6000).pipe(
-    tap(() => console.log('    sharedObservable emits')),
-    share()
-  );
+  private theSubject = new Subject<number>();
+
+  public thePublicObservable = this.theSubject.asObservable();
+
+  constructor(private zone: NgZone) {
+    const obs = timer(5000).pipe(
+      tap(() => console.log('    service timer emits'))
+    );
+    this.zone.runOutsideAngular(() => obs.subscribe(this.theSubject));
+  }
 }

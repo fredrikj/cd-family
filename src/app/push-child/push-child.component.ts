@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  NgZone,
   OnInit,
 } from '@angular/core';
 import { Service } from '../service';
@@ -18,51 +17,27 @@ import { Subject, tap } from 'rxjs';
 export class PushChildComponent implements OnInit {
   counter = 0;
 
+  templateSubject = new Subject<number>();
+
   @Input()
   public parent: string = '';
-
-  sharedSubject = new Subject<number>();
-
-  nonSharedSubject = new Subject<number>();
 
   get name() {
     console.log(`${this.parent}'s pushy child CD ${(this.counter += 1)}`);
     return 'pushy child';
   }
-  constructor(
-    private zone: NgZone,
-    private cdr: ChangeDetectorRef,
-    private service: Service
-  ) {}
+  constructor(public cdr: ChangeDetectorRef, public service: Service) {}
 
   ngOnInit(): void {
-    this.zone.runOutsideAngular(() =>
-      this.service.nonSharedObservable
-        .pipe(
-          tap(() =>
-            console.log(
-              '----------nonSharedServiceObservable in pushy child----------'
-            )
-          )
+    this.service.thePublicObservable
+      .pipe(
+        tap(() =>
+          console.log('----------thePublicObservable in pushy child----------')
         )
-        .subscribe((x) => {
-          this.nonSharedSubject.next(x);
-          this.cdr.detectChanges();
-        })
-    );
-    this.zone.runOutsideAngular(() =>
-      this.service.sharedObservable
-        .pipe(
-          tap(() =>
-            console.log(
-              '----------sharedServiceObservable in pushy child----------'
-            )
-          )
-        )
-        .subscribe((x) => {
-          this.sharedSubject.next(x);
-          this.cdr.detectChanges();
-        })
-    );
+      )
+      .subscribe((x) => {
+        this.templateSubject.next(x);
+        this.cdr.detectChanges();
+      });
   }
 }
