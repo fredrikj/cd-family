@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { fromEvent } from 'rxjs';
 import { Service } from '../service';
 
 @Component({
@@ -18,7 +19,30 @@ export class ParentComponent implements OnInit {
     console.log(`Plainy CD ${(this.counter += 1)}`);
     return 'Plainy';
   }
-  constructor(public cdr: ChangeDetectorRef, public service: Service) {}
+  constructor(
+    private zone: NgZone,
+    public cdr: ChangeDetectorRef,
+    public service: Service
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    addEventListener('click', () =>
+      console.log('----------Plainy default click CD----------')
+    );
+    this.zone.runOutsideAngular(() =>
+      addEventListener('click', () => {
+        console.log('----------Plainy private click CD----------');
+        this.cdr.detectChanges();
+      })
+    );
+    fromEvent(window, 'click').subscribe(() =>
+      console.log('----------Plainy observable default click CD----------')
+    );
+    this.zone.runOutsideAngular(() =>
+      fromEvent(window, 'click').subscribe(() => {
+        console.log('----------Plainy observable private click CD----------');
+        this.cdr.detectChanges();
+      })
+    );
+  }
 }
